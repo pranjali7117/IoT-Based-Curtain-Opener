@@ -1,0 +1,51 @@
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+// Blynk authentication token
+char auth[] = "YOUR_BLYNK_AUTH_TOKEN";
+
+// Wi-Fi credentials
+char ssid[] = "YourWiFiSSID";
+char pass[] = "YourWiFiPassword";
+
+// Define the pins for controlling the curtain motor
+int curtainMotorPin1 = D1;  // Motor control pin 1
+int curtainMotorPin2 = D2;  // Motor control pin 2
+
+void setup() {
+  // Set the curtain motor control pins as OUTPUT
+  pinMode(curtainMotorPin1, OUTPUT);
+  pinMode(curtainMotorPin2, OUTPUT);
+  
+  // Connect to Wi-Fi
+  Blynk.begin(auth, ssid, pass);
+
+  // Ensure the curtain is initially closed
+  closeCurtain();
+}
+
+void loop() {
+  Blynk.run();
+}
+
+// Function to open the curtain
+void openCurtain() {
+  digitalWrite(curtainMotorPin1, HIGH);
+  digitalWrite(curtainMotorPin2, LOW);
+}
+
+// Function to close the curtain
+void closeCurtain() {
+  digitalWrite(curtainMotorPin1, LOW);
+  digitalWrite(curtainMotorPin2, HIGH);
+}
+
+// Blynk virtual pin to control the curtain
+BLYNK_WRITE(V1) {
+  int value = param.asInt();
+  if (value == 1) {
+    openCurtain();
+  } else {
+    closeCurtain();
+  }
+}
